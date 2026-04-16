@@ -1,5 +1,5 @@
-import dataSource from '../data-source';
-import { seedRoles } from './master/role.seed';
+import dataSource from '@/database/data-source';
+import { seedRoles } from '@/database/seeds/master/role.seed';
 
 async function runSeeds() {
   await dataSource.initialize();

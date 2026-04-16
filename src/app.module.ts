@@ -1,18 +1,23 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RolesModule } from './modules/roles/roles.module';
-import { UsersModule } from './modules/users/users.module';
-import appConfig from './config/app.config';
-import databaseConfig from './config/database.config';
+
 import { LoggerModule } from 'nestjs-pino';
-import { loggerConfig } from './config/logger.config';
+
+import { appConfig, databaseConfig, loggerConfig, validateEnv } from '@/config';
+
+import { RolesModule } from '@/modules/roles/roles.module';
+import { UsersModule } from '@/modules/users/users.module';
+
+import { AppController } from '@/app.controller';
+import { AppService } from '@/app.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig, databaseConfig],
+      validate: validateEnv,
     }),
 
     TypeOrmModule.forRootAsync({
@@ -34,5 +39,7 @@ import { loggerConfig } from './config/logger.config';
     RolesModule,
     UsersModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
