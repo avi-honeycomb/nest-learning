@@ -5,6 +5,8 @@ import { RolesModule } from './modules/roles/roles.module';
 import { UsersModule } from './modules/users/users.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
+import { LoggerModule } from 'nestjs-pino';
+import { loggerConfig } from './config/logger.config';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import databaseConfig from './config/database.config';
         synchronize: false,
       }),
     }),
+
+    LoggerModule.forRoot(loggerConfig),
 
     RolesModule,
     UsersModule,
