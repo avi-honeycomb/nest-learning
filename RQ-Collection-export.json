@@ -1,0 +1,287 @@
+{
+  "schema_version": "1.0.0",
+  "records": [
+    {
+      "name": "Learning",
+      "type": "collection",
+      "data": {
+        "variables": {
+          "roleId": {
+            "id": "39035801-a5a1-461e-9500-15376c0d4bcd",
+            "type": "string",
+            "syncValue": "1",
+            "localValue": "",
+            "isPersisted": true,
+            "key": "roleId"
+          },
+          "baseUrl": {
+            "id": "4f098e74-3968-4969-a29e-17d7ca9f1790",
+            "type": "string",
+            "syncValue": "http://localhost:6200",
+            "isPersisted": true,
+            "localValue": "",
+            "key": "baseUrl"
+          }
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "variablesOrder": [
+          "baseUrl",
+          "roleId"
+        ]
+      },
+      "deleted": false,
+      "collectionId": "",
+      "id": "d522fa45-96e4-46fe-bfb7-453c5ba9d7fa",
+      "description": ""
+    },
+    {
+      "name": "Roles",
+      "type": "collection",
+      "data": {
+        "variables": {},
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "variablesOrder": []
+      },
+      "deleted": false,
+      "collectionId": "d522fa45-96e4-46fe-bfb7-453c5ba9d7fa",
+      "id": "9ff57228-7600-410c-b44e-c7229b300d4d",
+      "description": ""
+    },
+    {
+      "name": "Get All Roles",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/roles",
+          "method": "GET",
+          "headers": [],
+          "queryParams": [],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "examples": [],
+        "testResults": [],
+        "response": {
+          "body": "{\"status\":true,\"message\":\"Roles fetched successfully\",\"data\":{\"list\":[{\"id\":1,\"name\":\"ADMIN\",\"description\":null},{\"id\":2,\"name\":\"USER\",\"description\":null}]}}",
+          "time": 200.4893999993801,
+          "headers": [
+            {
+              "key": "x-powered-by",
+              "value": "Express"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "content-length",
+              "value": "157"
+            },
+            {
+              "key": "etag",
+              "value": "W/\"9d-M2zZhDkQnw/6WZatdx3q4ruah3E\""
+            },
+            {
+              "key": "date",
+              "value": "Thu, 16 Apr 2026 11:42:48 GMT"
+            },
+            {
+              "key": "connection",
+              "value": "close"
+            }
+          ],
+          "status": 200,
+          "statusText": "OK",
+          "redirectedUrl": ""
+        }
+      },
+      "deleted": false,
+      "collectionId": "9ff57228-7600-410c-b44e-c7229b300d4d",
+      "rank": "auntit17763291561441",
+      "id": "70c494e2-277a-45aa-8097-33c2bd03c557",
+      "description": ""
+    },
+    {
+      "name": "Get Role By Id",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/roles/{{roleId}}",
+          "method": "GET",
+          "headers": [],
+          "queryParams": [],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "examples": [],
+        "testResults": [],
+        "response": {
+          "body": "{\"status\":true,\"message\":\"Roles fetched successfully\",\"data\":{\"id\":1,\"name\":\"ADMIN\",\"description\":null}}",
+          "time": 251.43400000035763,
+          "headers": [
+            {
+              "key": "x-powered-by",
+              "value": "Express"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "content-length",
+              "value": "104"
+            },
+            {
+              "key": "etag",
+              "value": "W/\"68-vrjzIEenDkWbKsBah7SfNDKO6B8\""
+            },
+            {
+              "key": "date",
+              "value": "Thu, 16 Apr 2026 11:50:33 GMT"
+            },
+            {
+              "key": "connection",
+              "value": "close"
+            }
+          ],
+          "status": 200,
+          "statusText": "OK",
+          "redirectedUrl": ""
+        }
+      },
+      "deleted": false,
+      "collectionId": "9ff57228-7600-410c-b44e-c7229b300d4d",
+      "rank": "auo",
+      "id": "164a0e51-af33-4621-aa57-3abe947c88d1",
+      "description": ""
+    },
+    {
+      "name": "Create Role",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/roles",
+          "method": "POST",
+          "headers": [],
+          "queryParams": [],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "response": null,
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "examples": []
+      },
+      "deleted": false,
+      "collectionId": "9ff57228-7600-410c-b44e-c7229b300d4d",
+      "rank": "aup",
+      "id": "fbcfc75e-3988-4525-821d-78a13e4a43ba",
+      "description": ""
+    },
+    {
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/roles/{{roleId}}",
+          "method": "PATCH",
+          "headers": [],
+          "queryParams": [],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "response": null,
+        "examples": []
+      },
+      "type": "api",
+      "id": "4c7556d9-68ee-471c-8089-f2ca66271ccb",
+      "name": "Update Role",
+      "collectionId": "9ff57228-7600-410c-b44e-c7229b300d4d",
+      "deleted": false,
+      "description": ""
+    },
+    {
+      "name": "Delete Role",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/roles/{{roleId}}",
+          "method": "DELETE",
+          "headers": [],
+          "queryParams": [],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "response": null,
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "examples": []
+      },
+      "deleted": false,
+      "collectionId": "9ff57228-7600-410c-b44e-c7229b300d4d",
+      "rank": "ax",
+      "id": "8b633e17-d4c6-4674-86b4-70ebb2d1d419",
+      "description": ""
+    },
+    {
+      "name": "Users",
+      "type": "collection",
+      "data": {
+        "variables": {},
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        }
+      },
+      "deleted": false,
+      "collectionId": "d522fa45-96e4-46fe-bfb7-453c5ba9d7fa",
+      "id": "05040113-eb9f-4aa4-acda-63725b86afc3",
+      "description": ""
+    }
+  ]
+}
