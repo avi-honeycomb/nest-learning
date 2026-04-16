@@ -4,6 +4,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
+import { NotFoundAppException } from 'src/common/exceptions/not-found.exception';
 
 @Injectable()
 export class RolesService {
@@ -34,8 +35,19 @@ export class RolesService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(id: number) {
+    const role = await this.roleRepository.findOne({
+      where: { id },
+    });
+
+    if (!role) {
+      throw new NotFoundAppException('Role not found');
+    }
+
+    return {
+      message: 'Role fetched successfully',
+      data: { role },
+    };
   }
 
   update(id: number, updateRoleDto: UpdateRoleDto) {
