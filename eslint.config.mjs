@@ -1,6 +1,7 @@
 // @ts-check
 import eslint from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -23,13 +24,49 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
   },
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
+      'prettier/prettier': ['error', { endOfLine: 'auto' }],
+
+      // ✅ IMPORT SORTING RULES
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [
+            // 1. Node built-in
+            ['^node:'],
+
+            // 2. NestJS
+            ['^@nestjs'],
+
+            // 3. External packages
+            ['^@?\\w'],
+
+            // 4. Database
+            ['^@/database'],
+
+            // 5. Config (core)
+            ['^@/config'],
+
+            // 6. Modules (features)
+            ['^@/modules'],
+
+            // 7. Other internal
+            ['^@/'],
+
+            // 8. Relative imports
+            ['^\\.'],
+          ],
+        },
+      ],
+      'simple-import-sort/exports': 'error',
     },
   },
 );
