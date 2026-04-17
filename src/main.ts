@@ -1,7 +1,8 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
+import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -9,6 +10,7 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  app.useLogger(app.get(Logger));
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -18,6 +20,8 @@ async function bootstrap() {
     }),
   );
 
+  app.enableShutdownHooks();
+
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
 
@@ -25,8 +29,17 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  Logger.log(`🚀 App running on http://localhost:${port}`);
-  console.log(`🚀 App running on http://localhost:${port}`);
+  const logger = await app.resolve(Logger);
+  logger.log(`Server started on http://localhost:${port}`, 'Bootstrap');
+
+  const shutdown = async (signal: string) => {
+    logger.warn(`Server shutting down by ${signal}`, 'Bootstrap');
+    await app.close();
+    process.exit(0);
+  };
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
 
 bootstrap();
