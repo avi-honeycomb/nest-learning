@@ -1,8 +1,13 @@
+import { RoleType } from '@/common/enums/role.enum';
 import { NotFoundAppException } from '@/common/exceptions/not-found.exception';
 import { CreateRoleDto } from '@/modules/roles/dto/create-role.dto';
 import { UpdateRoleDto } from '@/modules/roles/dto/update-role.dto';
 import { Role } from '@/modules/roles/entities/role.entity';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PinoLogger } from 'nestjs-pino';
 import { Repository } from 'typeorm';
@@ -61,5 +66,25 @@ export class RolesService {
 
   remove(id: number) {
     return `This action removes a #${id} role`;
+  }
+
+  async findRoleIdByType(type: RoleType) {
+    try {
+      const role = await this.roleRepository.findOne({
+        where: { name: type },
+      });
+
+      if (!role) {
+        throw new NotFoundException(`Role '${type}' not found`);
+      }
+
+      return role.id;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException('Failed to fetch role');
+    }
   }
 }

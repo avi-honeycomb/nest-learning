@@ -19,6 +19,12 @@ class EnvValidationSchema {
 
   @IsString()
   DB_NAME: string;
+
+  @IsString()
+  JWT_SECRE: string;
+
+  @IsString()
+  JWT_EXPIRES_IN: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

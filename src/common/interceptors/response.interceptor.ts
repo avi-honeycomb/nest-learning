@@ -14,7 +14,7 @@ export class ResponseInterceptor implements NestInterceptor {
       map((response: any) => {
         console.log('response', response);
         const message = response?.message ?? '';
-        let data = response?.data ?? response ?? {};
+        let data = response?.data ?? {};
 
         console.log('data', data);
 
