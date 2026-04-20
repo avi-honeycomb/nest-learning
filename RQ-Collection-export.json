@@ -10,8 +10,8 @@
             "id": "39035801-a5a1-461e-9500-15376c0d4bcd",
             "type": "string",
             "syncValue": "1",
-            "localValue": "",
             "isPersisted": true,
+            "localValue": "",
             "key": "roleId"
           },
           "baseUrl": {
@@ -19,8 +19,7 @@
             "type": "string",
             "syncValue": "http://localhost:6200",
             "isPersisted": true,
-            "localValue": "",
-            "key": "baseUrl"
+            "localValue": ""
           }
         },
         "auth": {
@@ -35,6 +34,226 @@
       "deleted": false,
       "collectionId": "",
       "id": "d522fa45-96e4-46fe-bfb7-453c5ba9d7fa",
+      "description": ""
+    },
+    {
+      "name": "Auth",
+      "type": "collection",
+      "data": {
+        "variables": {},
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "variablesOrder": []
+      },
+      "deleted": false,
+      "collectionId": "d522fa45-96e4-46fe-bfb7-453c5ba9d7fa",
+      "id": "fe23516e-f073-45f1-aabc-88e8d718cd00",
+      "description": ""
+    },
+    {
+      "name": "Login",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/auth/login",
+          "method": "POST",
+          "headers": [],
+          "queryParams": [],
+          "body": "// {\n//   \"email\": \"admin@example.com\",\n//   \"password\": \"Admin@123\"\n// }\n{\n  \"email\": \"rahul.sharma@yopmail.com\",\n  \"password\": \"Rahul@1234\"\n}",
+          "contentType": "application/json"
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "response": null,
+        "examples": []
+      },
+      "deleted": false,
+      "collectionId": "fe23516e-f073-45f1-aabc-88e8d718cd00",
+      "rank": "auntit17764057201781",
+      "id": "5628fe94-698d-421a-b063-014698ec43ee",
+      "description": ""
+    },
+    {
+      "name": "Logout",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/auth/logout",
+          "method": "POST",
+          "headers": [],
+          "queryParams": [],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "response": null,
+        "examples": []
+      },
+      "deleted": false,
+      "collectionId": "fe23516e-f073-45f1-aabc-88e8d718cd00",
+      "rank": "av",
+      "id": "0f4e9fac-2341-4ace-922b-f06b4d3e5e22",
+      "description": ""
+    },
+    {
+      "name": "Get Profile",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/auth/profile",
+          "method": "GET",
+          "headers": [],
+          "queryParams": [],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "response": null,
+        "examples": []
+      },
+      "deleted": false,
+      "collectionId": "fe23516e-f073-45f1-aabc-88e8d718cd00",
+      "rank": "aw",
+      "id": "52490054-f485-4955-aebe-cef52cf34811",
+      "description": ""
+    },
+    {
+      "name": "Signup",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/auth/signup",
+          "method": "POST",
+          "headers": [],
+          "queryParams": [],
+          "body": "{\n  \"firstName\": \"Rahul\",\n  \"lastName\": \"Sharma\",\n  \"email\": \"rahul.sharma@yopmail.com\",\n  \"password\": \"Rahul@1234\",\n  \"phone\": \"+919876543210\"\n}",
+          "contentType": "application/json"
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "response": null,
+        "examples": []
+      },
+      "deleted": false,
+      "collectionId": "fe23516e-f073-45f1-aabc-88e8d718cd00",
+      "rank": "ax",
+      "id": "2ba99fe0-3d83-4e12-bed0-040e3131839e",
+      "description": ""
+    },
+    {
+      "name": "Verify Email",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/auth/verify-email",
+          "method": "GET",
+          "headers": [],
+          "queryParams": [
+            {
+              "id": 1776678006672,
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoicmFodWwuc2hhcm1hQHlvcG1haWwuY29tIiwidHlwZSI6ImVtYWlsLXZlcmlmaWNhdGlvbiIsImlhdCI6MTc3NjY3OTA0MCwiZXhwIjoxNzc2NjgyNjQwfQ.-NGcnn15DC-_8sumiYU8-JvHBDYTpsw4rBvspVTmvD4",
+              "isEnabled": true,
+              "description": "",
+              "dataType": "string"
+            }
+          ],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "testResults": [],
+        "response": {
+          "body": "{\"status\":true,\"message\":\"Email already verified\",\"data\":{}}",
+          "time": 738.7419000007212,
+          "headers": [
+            {
+              "key": "x-powered-by",
+              "value": "Express"
+            },
+            {
+              "key": "access-control-allow-origin",
+              "value": "http://localhost:3000"
+            },
+            {
+              "key": "vary",
+              "value": "Origin"
+            },
+            {
+              "key": "access-control-allow-credentials",
+              "value": "true"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "content-length",
+              "value": "60"
+            },
+            {
+              "key": "etag",
+              "value": "W/\"3c-9VnDxlY5AINWWI/VQM/dRCHDe24\""
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Apr 2026 09:44:22 GMT"
+            },
+            {
+              "key": "connection",
+              "value": "close"
+            }
+          ],
+          "status": 200,
+          "statusText": "OK",
+          "redirectedUrl": ""
+        },
+        "examples": []
+      },
+      "deleted": false,
+      "collectionId": "fe23516e-f073-45f1-aabc-88e8d718cd00",
+      "rank": "ay",
+      "id": "337f3c7f-3d40-46ed-9099-3fa53e12fc72",
       "description": ""
     },
     {
@@ -75,40 +294,7 @@
           "authConfigStore": {}
         },
         "examples": [],
-        "testResults": [],
-        "response": {
-          "body": "{\"status\":true,\"message\":\"Roles fetched successfully\",\"data\":{\"list\":[{\"id\":1,\"name\":\"ADMIN\",\"description\":null},{\"id\":2,\"name\":\"USER\",\"description\":null}]}}",
-          "time": 200.4893999993801,
-          "headers": [
-            {
-              "key": "x-powered-by",
-              "value": "Express"
-            },
-            {
-              "key": "content-type",
-              "value": "application/json; charset=utf-8"
-            },
-            {
-              "key": "content-length",
-              "value": "157"
-            },
-            {
-              "key": "etag",
-              "value": "W/\"9d-M2zZhDkQnw/6WZatdx3q4ruah3E\""
-            },
-            {
-              "key": "date",
-              "value": "Thu, 16 Apr 2026 11:42:48 GMT"
-            },
-            {
-              "key": "connection",
-              "value": "close"
-            }
-          ],
-          "status": 200,
-          "statusText": "OK",
-          "redirectedUrl": ""
-        }
+        "response": null
       },
       "deleted": false,
       "collectionId": "9ff57228-7600-410c-b44e-c7229b300d4d",
@@ -138,40 +324,7 @@
           "authConfigStore": {}
         },
         "examples": [],
-        "testResults": [],
-        "response": {
-          "body": "{\"status\":true,\"message\":\"Roles fetched successfully\",\"data\":{\"id\":1,\"name\":\"ADMIN\",\"description\":null}}",
-          "time": 251.43400000035763,
-          "headers": [
-            {
-              "key": "x-powered-by",
-              "value": "Express"
-            },
-            {
-              "key": "content-type",
-              "value": "application/json; charset=utf-8"
-            },
-            {
-              "key": "content-length",
-              "value": "104"
-            },
-            {
-              "key": "etag",
-              "value": "W/\"68-vrjzIEenDkWbKsBah7SfNDKO6B8\""
-            },
-            {
-              "key": "date",
-              "value": "Thu, 16 Apr 2026 11:50:33 GMT"
-            },
-            {
-              "key": "connection",
-              "value": "close"
-            }
-          ],
-          "status": 200,
-          "statusText": "OK",
-          "redirectedUrl": ""
-        }
+        "response": null
       },
       "deleted": false,
       "collectionId": "9ff57228-7600-410c-b44e-c7229b300d4d",
@@ -228,8 +381,8 @@
           "currentAuthType": "INHERIT",
           "authConfigStore": {}
         },
-        "response": null,
-        "examples": []
+        "examples": [],
+        "response": null
       },
       "type": "api",
       "id": "4c7556d9-68ee-471c-8089-f2ca66271ccb",
@@ -251,7 +404,6 @@
           "body": "",
           "contentType": "text/plain"
         },
-        "response": null,
         "scripts": {
           "preRequest": "",
           "postResponse": ""
@@ -260,6 +412,7 @@
           "currentAuthType": "INHERIT",
           "authConfigStore": {}
         },
+        "response": null,
         "examples": []
       },
       "deleted": false,
@@ -276,11 +429,87 @@
         "auth": {
           "currentAuthType": "INHERIT",
           "authConfigStore": {}
-        }
+        },
+        "variablesOrder": []
       },
       "deleted": false,
       "collectionId": "d522fa45-96e4-46fe-bfb7-453c5ba9d7fa",
       "id": "05040113-eb9f-4aa4-acda-63725b86afc3",
+      "description": ""
+    },
+    {
+      "name": "Get User By Id",
+      "type": "api",
+      "data": {
+        "type": "http",
+        "request": {
+          "url": "{{baseUrl}}/users/2",
+          "method": "GET",
+          "headers": [],
+          "queryParams": [],
+          "body": "",
+          "contentType": "text/plain"
+        },
+        "response": {
+          "body": "{\"status\":true,\"message\":\"User fetched successfully\",\"data\":{\"id\":2,\"firstName\":\"Rahul\",\"lastName\":\"Sharma\",\"email\":\"rahul.sharma@yopmail.com\",\"role\":{\"id\":2,\"name\":\"USER\"},\"isActive\":true,\"isVerified\":true,\"createdAt\":\"2026-04-20T09:56:57.325Z\"}}",
+          "time": 300.1891000010073,
+          "headers": [
+            {
+              "key": "x-powered-by",
+              "value": "Express"
+            },
+            {
+              "key": "access-control-allow-origin",
+              "value": "http://localhost:3000"
+            },
+            {
+              "key": "vary",
+              "value": "Origin"
+            },
+            {
+              "key": "access-control-allow-credentials",
+              "value": "true"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "content-length",
+              "value": "247"
+            },
+            {
+              "key": "etag",
+              "value": "W/\"f7-tI9GxjHShnEqWAKxZa8Vk8wIxYs\""
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Apr 2026 10:27:18 GMT"
+            },
+            {
+              "key": "connection",
+              "value": "close"
+            }
+          ],
+          "status": 200,
+          "statusText": "OK",
+          "redirectedUrl": ""
+        },
+        "scripts": {
+          "preRequest": "",
+          "postResponse": ""
+        },
+        "auth": {
+          "currentAuthType": "INHERIT",
+          "authConfigStore": {}
+        },
+        "testResults": [],
+        "examples": []
+      },
+      "deleted": false,
+      "collectionId": "05040113-eb9f-4aa4-acda-63725b86afc3",
+      "rank": "auntit17766793045331",
+      "id": "7edc614b-1634-4e80-8e07-551cdf41d597",
       "description": ""
     }
   ]
