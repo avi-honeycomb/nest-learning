@@ -34,11 +34,41 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return this.userRepository.findOne({
-      where: { id },
-      relations: ['role'],
-    });
+  async findOne(id: number) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id },
+        relations: ['role'],
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          isActive: true,
+          isVerified: true,
+          createdAt: true,
+          role: {
+            id: true,
+            name: true,
+          },
+        },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      return {
+        message: 'User fetched successfully',
+        data: user,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException('Failed to fetch user');
+    }
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

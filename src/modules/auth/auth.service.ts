@@ -155,20 +155,20 @@ export class AuthService {
         throw new UnauthorizedException('Invalid token type');
       }
 
-      const user = await this.usersService.findOne(5);
+      const user = await this.usersService.findOne(payload.sub);
 
       if (!user) {
         throw new NotFoundException('User not found');
       }
 
-      if (user.isVerified) {
+      if (user.data.isVerified) {
         return {
           message: 'Email already verified',
           data: null,
         };
       }
 
-      await this.usersService.update(user.id, {
+      await this.usersService.update(user.data.id, {
         isVerified: true,
       });
 

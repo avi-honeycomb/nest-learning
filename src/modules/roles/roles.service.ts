@@ -1,16 +1,19 @@
-import { RoleType } from '@/common/enums/role.enum';
-import { NotFoundAppException } from '@/common/exceptions/not-found.exception';
-import { CreateRoleDto } from '@/modules/roles/dto/create-role.dto';
-import { UpdateRoleDto } from '@/modules/roles/dto/update-role.dto';
-import { Role } from '@/modules/roles/entities/role.entity';
 import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { PinoLogger } from 'nestjs-pino';
 import { Repository } from 'typeorm';
+
+import { CreateRoleDto } from '@/modules/roles/dto/create-role.dto';
+import { UpdateRoleDto } from '@/modules/roles/dto/update-role.dto';
+import { Role } from '@/modules/roles/entities/role.entity';
+
+import { RoleType } from '@/common/enums/role.enum';
+import { NotFoundAppException } from '@/common/exceptions/not-found.exception';
 
 @Injectable()
 export class RolesService {
@@ -30,6 +33,19 @@ export class RolesService {
     this.logger.info('Fetching all roles');
     const roles = await this.roleRepository.find({
       order: { id: 'ASC' },
+      // relations: ['users'],
+      // select: {
+      //   id: true,
+      //   name: true,
+      //   users: {
+      //     id: true,
+      //     firstName: true,
+      //     lastName: true,
+      //     email: true,
+      //     isActive: true,
+      //     isVerified: true,
+      //   },
+      // },
     });
 
     this.logger.info({ count: roles.length }, 'Roles fetched successfully');
