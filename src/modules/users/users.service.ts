@@ -1,9 +1,18 @@
-import { CreateUserInput } from '@/common/types';
-import { User } from '@/modules/users/entities/user.entity';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { PinoLogger } from 'nestjs-pino';
 import { QueryFailedError, Repository } from 'typeorm';
+
+import { User } from '@/modules/users/entities/user.entity';
+
+import { CreateUserInput } from '@/common/types';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -26,11 +35,53 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepository.findOne({
+      where: { id },
+      relations: ['role'],
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id },
+        relations: ['role'],
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (updateUserDto.email && updateUserDto.email !== user.email) {
+        const existingUser = await this.userRepository.findOne({
+          where: { email: updateUserDto.email },
+        });
+
+        if (existingUser) {
+          throw new ConflictException('Email already exists');
+        }
+      }
+
+      Object.assign(user, updateUserDto);
+
+      const updatedUser = await this.userRepository.save(user);
+
+      const { password, ...userWithoutPassword } = updatedUser;
+
+      return {
+        message: 'User updated successfully',
+        data: userWithoutPassword,
+      };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException('Failed to update user');
+    }
   }
 
   remove(id: number) {

@@ -1,9 +1,12 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
+
 import type { Response } from 'express';
+
+import { SignupDto } from '@/modules/auth/dto/signup.dto';
 
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { Public } from '@/common/decorators/public.decorator';
-import { SignupDto } from '@/modules/auth/dto/signup.dto';
+
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 
@@ -50,6 +53,12 @@ export class AuthController {
         user: result.user,
       },
     };
+  }
+
+  @Public()
+  @Get('verify-email')
+  verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
   }
 
   @Get('profile')

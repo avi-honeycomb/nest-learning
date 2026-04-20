@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { LoggerModule } from 'nestjs-pino';
@@ -9,23 +10,24 @@ import {
   databaseConfig,
   jwtConfig,
   loggerConfig,
+  mailConfig,
   validateEnv,
 } from '@/config';
 
+import { AuthModule } from '@/modules/auth/auth.module';
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
+import { MailModule } from '@/modules/mail/mail.module';
 import { RolesModule } from '@/modules/roles/roles.module';
 import { UsersModule } from '@/modules/users/users.module';
 
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
-import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig, jwtConfig],
+      load: [appConfig, databaseConfig, jwtConfig, mailConfig],
       validate: validateEnv,
     }),
 
@@ -48,6 +50,7 @@ import { AuthModule } from './modules/auth/auth.module';
     RolesModule,
     UsersModule,
     AuthModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

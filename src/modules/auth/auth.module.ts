@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+
 import type { StringValue } from 'ms';
 
+import { MailModule } from '@/modules/mail/mail.module';
 import { RolesModule } from '@/modules/roles/roles.module';
 import { UsersModule } from '@/modules/users/users.module';
+
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtCookieStrategy } from './strategies/jwt-cookie.strategy';
@@ -15,6 +18,7 @@ import { JwtCookieStrategy } from './strategies/jwt-cookie.strategy';
     PassportModule,
     UsersModule,
     RolesModule,
+    MailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
