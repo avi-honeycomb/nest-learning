@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 
 import type { Response } from 'express';
+import { PinoLogger } from 'nestjs-pino';
 
 import { SignupDto } from '@/modules/auth/dto/signup.dto';
 
@@ -21,7 +22,12 @@ const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(AuthController.name);
+  }
 
   @Public()
   @Post('signup')
@@ -35,6 +41,8 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
+    this.logger.info({ email: loginDto.email }, 'Login attempt');
+
     const result = await this.authService.login(
       loginDto.email,
       loginDto.password,

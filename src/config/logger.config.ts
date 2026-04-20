@@ -9,7 +9,16 @@ export const loggerConfig: Params = {
     timestamp: pino.stdTimeFunctions.isoTime,
 
     redact: {
-      paths: ['req.headers.authorization', 'req.body.password'],
+      paths: [
+        'req.headers',
+        // 'req.headers.authorization',
+        // 'req.headers.cookie',
+        'req.remoteAddress',
+        'req.remotePort',
+        'req.params.path',
+        'req.body.password',
+        'res.headers',
+      ],
       remove: true,
     },
 
