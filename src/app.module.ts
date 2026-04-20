@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { LoggerModule } from 'nestjs-pino';
@@ -22,6 +23,8 @@ import { UsersModule } from '@/modules/users/users.module';
 
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
+
+import { TasksModule } from './modules/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -47,10 +50,13 @@ import { AppService } from '@/app.service';
 
     LoggerModule.forRoot(loggerConfig),
 
+    ScheduleModule.forRoot(),
+
     RolesModule,
     UsersModule,
     AuthModule,
     MailModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [

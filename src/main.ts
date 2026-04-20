@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 
 import cookieParser from 'cookie-parser';
 import { Logger } from 'nestjs-pino';
+
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -39,6 +40,7 @@ async function bootstrap() {
   await app.listen(port);
 
   logger.log(`Server started on http://localhost:${port}`, 'Bootstrap');
+  console.log(`Server started on http://localhost:${port}`);
 
   const shutdown = async (signal: string) => {
     logger.warn(`Server shutting down by ${signal}`, 'Bootstrap');
