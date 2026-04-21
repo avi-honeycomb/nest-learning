@@ -1,21 +1,31 @@
-import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import type { Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 
 import { SignupDto } from '@/modules/auth/dto/signup.dto';
 
+import {
+  DEFAULT_FILE_SIZE,
+  IMAGE_ALLOWED_TYPES,
+} from '@/common/constants/file.constants';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { Public } from '@/common/decorators/public.decorator';
+import type { AuthUser } from '@/common/types/auth.types';
+import { createMulterOptions } from '@/common/utils/file-upload.utils';
 
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-
-type AuthUser = {
-  userId: number;
-  email: string;
-  role: string;
-};
 
 const ACCESS_TOKEN_COOKIE = 'access_token';
 const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
@@ -31,8 +41,22 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  signup(@Body() signupDto: SignupDto) {
-    return this.authService.signup(signupDto);
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      createMulterOptions({
+        folder: 'profileImages',
+        prefix: 'profile',
+        maxSize: DEFAULT_FILE_SIZE,
+        allowedMimeTypes: IMAGE_ALLOWED_TYPES,
+      }),
+    ),
+  )
+  signup(
+    @Body() signupDto: SignupDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.authService.signup(signupDto, file);
   }
 
   @Public()
@@ -41,6 +65,7 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
+    console.log('loginDto', loginDto);
     this.logger.info({ email: loginDto.email }, 'Login attempt');
 
     const result = await this.authService.login(
@@ -71,12 +96,7 @@ export class AuthController {
 
   @Get('profile')
   getProfile(@CurrentUser() user: AuthUser) {
-    return {
-      message: 'Profile fetched successfully',
-      data: {
-        user,
-      },
-    };
+    return this.authService.getProfile(user);
   }
 
   @Post('logout')

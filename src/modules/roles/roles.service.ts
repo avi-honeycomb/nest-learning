@@ -8,8 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PinoLogger } from 'nestjs-pino';
 import { Repository } from 'typeorm';
 
-import { CreateRoleDto } from '@/modules/roles/dto/create-role.dto';
-import { UpdateRoleDto } from '@/modules/roles/dto/update-role.dto';
 import { Role } from '@/modules/roles/entities/role.entity';
 
 import { RoleType } from '@/common/enums/role.enum';
@@ -25,80 +23,73 @@ export class RolesService {
     this.logger.setContext(RolesService.name);
   }
 
-  create(createRoleDto: CreateRoleDto) {
-    return 'This action adds a new role';
-  }
-
   async findAll() {
     this.logger.info('Fetching all roles');
-    const roles = await this.roleRepository.find({
-      order: { id: 'ASC' },
-      // relations: ['users'],
-      // select: {
-      //   id: true,
-      //   name: true,
-      //   users: {
-      //     id: true,
-      //     firstName: true,
-      //     lastName: true,
-      //     email: true,
-      //     isActive: true,
-      //     isVerified: true,
-      //   },
-      // },
-    });
 
-    this.logger.info({ count: roles.length }, 'Roles fetched successfully');
+    try {
+      const roles = await this.roleRepository.find({
+        order: { id: 'ASC' },
+      });
 
-    return {
-      message: 'Roles fetched successfully',
-      data: {
-        list: roles,
-      },
-    };
+      this.logger.info({ count: roles.length }, 'Roles fetched successfully');
+
+      return roles;
+    } catch (error) {
+      this.logger.error({ error }, 'Failed to fetch roles');
+
+      throw new InternalServerErrorException('Failed to fetch roles');
+    }
   }
 
   async findOne(id: number) {
     this.logger.info({ id }, 'Fetching role');
 
-    const role = await this.roleRepository.findOne({
-      where: { id },
-    });
-
-    if (!role) {
-      this.logger.warn({ id }, 'Role not found');
-      throw new NotFoundAppException('Role not found');
-    }
-
-    return {
-      message: 'Role fetched successfully',
-      data: { role },
-    };
-  }
-
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} role`;
-  }
-
-  async findRoleIdByType(type: RoleType) {
     try {
       const role = await this.roleRepository.findOne({
-        where: { name: type },
+        where: { id },
       });
 
       if (!role) {
+        this.logger.warn({ id }, 'Role not found');
+        throw new NotFoundAppException('Role not found');
+      }
+
+      this.logger.info({ id }, 'Role fetched successfully');
+
+      return role;
+    } catch (error) {
+      if (error instanceof NotFoundAppException) {
+        throw error;
+      }
+
+      this.logger.error({ id, error }, 'Failed to fetch role');
+      throw new InternalServerErrorException('Failed to fetch role');
+    }
+  }
+
+  async findRoleIdByType(type: RoleType): Promise<number> {
+    this.logger.info({ type }, 'Fetching role id by type');
+
+    try {
+      const role = await this.roleRepository.findOne({
+        where: { name: type },
+        select: { id: true },
+      });
+
+      if (!role) {
+        this.logger.warn({ type }, 'Role not found');
         throw new NotFoundException(`Role '${type}' not found`);
       }
+
+      this.logger.info({ id: role.id, type }, 'Role id fetched');
 
       return role.id;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
+
+      this.logger.error({ type, error }, 'Failed to fetch role id');
 
       throw new InternalServerErrorException('Failed to fetch role');
     }

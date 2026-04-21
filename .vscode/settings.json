@@ -24,5 +24,7 @@
   "javascript.preferences.importModuleSpecifier": "non-relative",
 
   "typescript.preferences.importModuleSpecifierEnding": "auto",
-  "javascript.preferences.importModuleSpecifierEnding": "auto"
+  "javascript.preferences.importModuleSpecifierEnding": "auto",
+
+  "typescript.preferences.preferTypeOnlyAutoImports": true
 }

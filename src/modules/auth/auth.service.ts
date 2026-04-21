@@ -1,3 +1,5 @@
+import { unlink } from 'node:fs/promises';
+
 import {
   ConflictException,
   Injectable,
@@ -17,7 +19,10 @@ import { User } from '@/modules/users/entities/user.entity';
 import { UsersService } from '@/modules/users/users.service';
 
 import { RoleType } from '@/common/enums/role.enum';
-import { EmailVerificationPayload } from '@/common/types/auth.types';
+import type {
+  AuthUser,
+  EmailVerificationPayload,
+} from '@/common/types/auth.types';
 
 @Injectable()
 export class AuthService {
@@ -60,35 +65,44 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    const user = await this.validateUser(email, password);
+    try {
+      const user = await this.validateUser(email, password);
 
-    console.log('user', user);
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role?.name,
-    };
-
-    const accessToken = await this.jwtService.signAsync(payload, {
-      secret: this.configService.getOrThrow<string>('jwt.secret'),
-      expiresIn:
-        this.configService.getOrThrow<JwtSignOptions['expiresIn']>(
-          'jwt.expiresIn',
-        ) || '1d',
-    });
-
-    return {
-      accessToken,
-      user: {
-        id: user.id,
+      const payload = {
+        sub: user.id,
         email: user.email,
         role: user.role?.name,
-      },
-    };
+      };
+
+      const accessToken = await this.jwtService.signAsync(payload, {
+        secret: this.configService.getOrThrow<string>('jwt.secret'),
+        expiresIn:
+          this.configService.getOrThrow<JwtSignOptions['expiresIn']>(
+            'jwt.expiresIn',
+          ) || '1d',
+      });
+
+      return {
+        accessToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role?.name,
+        },
+      };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
+      // optional: log error
+      console.error('Login error:', error);
+
+      throw new InternalServerErrorException('Login failed');
+    }
   }
 
-  async signup(signupDto: SignupDto) {
+  async signup(signupDto: SignupDto, file?: Express.Multer.File) {
     try {
       const existingUser = await this.usersService.findByEmail(signupDto.email);
 
@@ -100,15 +114,18 @@ export class AuthService {
 
       const hashedPassword = await bcrypt.hash(signupDto.password, 10);
 
+      const imagePath = file
+        ? `/uploads/profileImages/${file.filename}`
+        : undefined;
+
       const user = await this.usersService.createUser({
         ...signupDto,
         roleId,
         password: hashedPassword,
+        profileImage: imagePath,
         isActive: true,
         isVerified: false,
       });
-
-      console.log('User', user);
 
       const token = this.generateEmailVerificationToken(user);
 
@@ -123,6 +140,14 @@ export class AuthService {
         data: null,
       };
     } catch (error) {
+      if (file?.path) {
+        try {
+          await unlink(file.path);
+        } catch {
+          // optional: log file delete failure
+        }
+      }
+
       if (error instanceof ConflictException) {
         throw error;
       }
@@ -157,7 +182,7 @@ export class AuthService {
 
       const user = await this.usersService.findOne(payload.sub);
 
-      if (!user) {
+      if (!user.data) {
         throw new NotFoundException('User not found');
       }
 
@@ -175,6 +200,31 @@ export class AuthService {
       return {
         message: 'Email verified successfully',
         data: null,
+      };
+    } catch (error) {
+      console.log('error', error);
+
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Verification link expired');
+      }
+
+      throw new UnauthorizedException('Invalid verification token');
+    }
+  }
+
+  async getProfile(currentUser: AuthUser) {
+    try {
+      const user = await this.usersService.findOne(currentUser.userId);
+
+      if (!user.data) {
+        throw new NotFoundException('User not found');
+      }
+
+      return {
+        message: 'Profile fetched successfully',
+        data: {
+          user,
+        },
       };
     } catch (error) {
       console.log('error', error);

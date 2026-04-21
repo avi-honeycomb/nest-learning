@@ -25,7 +25,7 @@ export class User {
   @Column({ type: 'varchar', unique: true })
   email: string;
 
-  @Column({ type: 'varchar', select: false })
+  @Column({ type: 'varchar' })
   password: string;
 
   // 🔹 Role Relation
@@ -46,6 +46,9 @@ export class User {
   // 🔹 Optional fields (future use)
   @Column({ name: 'phone', type: 'varchar', length: 20, nullable: true })
   phone?: string;
+
+  @Column({ name: 'profile_image', type: 'varchar', nullable: true })
+  profileImage?: string | null;
 
   // 🔹 Timestamps (VERY IMPORTANT)
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

@@ -13,7 +13,6 @@ import { User } from '@/modules/users/entities/user.entity';
 
 import { CreateUserInput } from '@/common/types';
 
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -26,32 +25,71 @@ export class UsersService {
     this.logger.setContext(UsersService.name);
   }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  // async findAll(payload: GetAllUsersDto) {
+  //   this.logger.info('Fetching all users');
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  //   try {
+  //     const { isPagination = true, page = 1, pageSize = 10 } = payload;
+
+  //     const query = this.userRepository.createQueryBuilder('user');
+
+  //     // Return all users (no pagination)
+  //     if (!isPagination) {
+  //       const list = await query.getMany();
+
+  //       return {
+  //         list,
+  //         count: list.length,
+  //         pagination: null,
+  //       };
+  //     }
+
+  //     // Apply pagination
+  //     const skip = (page - 1) * pageSize;
+
+  //     query.skip(skip).take(pageSize);
+
+  //     const [list, total] = await query.getManyAndCount();
+
+  //     return {
+  //       list,
+  //       count: list.length,
+  //       pagination: {
+  //         page,
+  //         pageSize,
+  //         totalRecords: total,
+  //         totalPages: Math.ceil(total / pageSize),
+  //       },
+  //     };
+  //   } catch (error) {
+  //     if (error instanceof BadRequestException) {
+  //       throw error;
+  //     }
+
+  //     this.logger.error({ error, payload }, 'Failed to fetch users');
+
+  //     throw new InternalServerErrorException('Failed to fetch users');
+  //   }
+  // }
 
   async findOne(id: number) {
     try {
       const user = await this.userRepository.findOne({
         where: { id },
         relations: ['role'],
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          isActive: true,
-          isVerified: true,
-          createdAt: true,
-          role: {
-            id: true,
-            name: true,
-          },
-        },
+        // select: {
+        //   id: true,
+        //   email: true,
+        //   firstName: true,
+        //   lastName: true,
+        //   isActive: true,
+        //   isVerified: true,
+        //   createdAt: true,
+        //   role: {
+        //     id: true,
+        //     name: true,
+        //   },
+        // },
       });
 
       if (!user) {
@@ -119,10 +157,12 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { email },
       relations: ['role'],
     });
+
+    return user;
   }
 
   async createUser(createUserInput: CreateUserInput) {

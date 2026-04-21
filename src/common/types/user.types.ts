@@ -5,6 +5,7 @@ export type CreateUserInput = {
   password: string;
   roleId: number;
   phone?: string;
+  profileImage?: string;
   isActive?: boolean;
   isVerified?: boolean;
 };
