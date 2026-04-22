@@ -22,7 +22,7 @@ import {
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { Public } from '@/common/decorators/public.decorator';
 import type { AuthUser } from '@/common/types/auth.types';
-import { createMulterOptions } from '@/common/utils/file-upload.utils';
+import { createMulterOptions } from '@/common/utils/file.utils';
 
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';

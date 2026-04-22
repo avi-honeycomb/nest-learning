@@ -9,9 +9,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PinoLogger } from 'nestjs-pino';
 import { QueryFailedError, Repository } from 'typeorm';
 
+import { GetAllUsersDto } from '@/modules/users/dto/get-all-users.dto';
 import { User } from '@/modules/users/entities/user.entity';
 
 import { CreateUserInput } from '@/common/types';
+import { buildFileUrl } from '@/common/utils/file.utils';
 
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -25,52 +27,113 @@ export class UsersService {
     this.logger.setContext(UsersService.name);
   }
 
-  // async findAll(payload: GetAllUsersDto) {
-  //   this.logger.info('Fetching all users');
+  async findAll(payload: GetAllUsersDto) {
+    this.logger.info('Fetching all users');
 
-  //   try {
-  //     const { isPagination = true, page = 1, pageSize = 10 } = payload;
+    try {
+      const {
+        isPagination = true,
+        page = 1,
+        pageSize = 10,
+        search,
+        filter,
+      } = payload;
 
-  //     const query = this.userRepository.createQueryBuilder('user');
+      const query = this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.role', 'role')
+        .select([
+          'user.id',
+          'user.firstName',
+          'user.lastName',
+          'user.email',
+          'user.isActive',
+          'user.isVerified',
+          'user.phone',
+          'user.profileImage',
+          'user.createdAt',
+          'user.updatedAt',
+          'role.id',
+          'role.name',
+        ]);
 
-  //     // Return all users (no pagination)
-  //     if (!isPagination) {
-  //       const list = await query.getMany();
+      if (search) {
+        const searchValue = `%${search}%`;
 
-  //       return {
-  //         list,
-  //         count: list.length,
-  //         pagination: null,
-  //       };
-  //     }
+        const fields = [
+          'user.firstName',
+          'user.lastName',
+          'user.email',
+          'user.phone',
+        ];
 
-  //     // Apply pagination
-  //     const skip = (page - 1) * pageSize;
+        const conditions = fields
+          .map((field) => `${field} ILIKE :search`)
+          .join(' OR ');
 
-  //     query.skip(skip).take(pageSize);
+        query.andWhere(`(${conditions})`, { search: searchValue });
+      }
 
-  //     const [list, total] = await query.getManyAndCount();
+      if (filter?.roleId !== undefined) {
+        query.andWhere('user.roleId = :roleId', { roleId: filter.roleId });
+      }
 
-  //     return {
-  //       list,
-  //       count: list.length,
-  //       pagination: {
-  //         page,
-  //         pageSize,
-  //         totalRecords: total,
-  //         totalPages: Math.ceil(total / pageSize),
-  //       },
-  //     };
-  //   } catch (error) {
-  //     if (error instanceof BadRequestException) {
-  //       throw error;
-  //     }
+      if (filter?.isVerified !== undefined) {
+        query.andWhere('user.isVerified = :isVerified', {
+          isVerified: filter.isVerified,
+        });
+      }
 
-  //     this.logger.error({ error, payload }, 'Failed to fetch users');
+      if (filter?.isActive !== undefined) {
+        query.andWhere('user.isActive = :isActive', {
+          isActive: filter.isActive,
+        });
+      }
 
-  //     throw new InternalServerErrorException('Failed to fetch users');
-  //   }
-  // }
+      // Return all users (no pagination)
+      if (!isPagination) {
+        const list = await query.getMany();
+
+        const updatedList = list.map((user) => ({
+          ...user,
+          profileImage: buildFileUrl(user.profileImage),
+        }));
+
+        return {
+          list: updatedList,
+          count: updatedList.length,
+          pagination: null,
+        };
+      }
+
+      // Apply pagination
+      const skip = (page - 1) * pageSize;
+
+      query.skip(skip).take(pageSize);
+
+      const [list, total] = await query.getManyAndCount();
+
+      const updatedList = list.map((user) => ({
+        ...user,
+        profileImage: buildFileUrl(user.profileImage),
+      }));
+
+      return {
+        list: updatedList,
+        count: updatedList.length,
+        pagination: {
+          page,
+          pageSize,
+          totalRecords: total,
+          totalPages: Math.ceil(total / pageSize),
+        },
+      };
+    } catch (error) {
+      this.logger.error({ error, payload }, 'Failed to fetch users');
+
+      throw new InternalServerErrorException('Failed to fetch users');
+    }
+  }
 
   async findOne(id: number) {
     try {
