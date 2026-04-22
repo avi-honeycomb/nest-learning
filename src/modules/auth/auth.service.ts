@@ -75,11 +75,11 @@ export class AuthService {
       };
 
       const accessToken = await this.jwtService.signAsync(payload, {
-        secret: this.configService.getOrThrow<string>('jwt.secret'),
+        secret: this.configService.get<string>('APP_JWT_SECRET'),
         expiresIn:
-          this.configService.getOrThrow<JwtSignOptions['expiresIn']>(
-            'jwt.expiresIn',
-          ) || '1d',
+          this.configService.get<JwtSignOptions['expiresIn']>(
+            'APP_JWT_EXPIRES_IN',
+          ),
       });
 
       return {
@@ -165,7 +165,7 @@ export class AuthService {
       },
       {
         expiresIn: '1h',
-        secret: this.configService.get<string>('jwt.emailSecret'),
+        secret: this.configService.get<string>('APP_JWT_EMAIL_SECRET'),
       },
     );
   }
@@ -173,7 +173,7 @@ export class AuthService {
   async verifyEmail(token: string) {
     try {
       const payload = this.jwtService.verify<EmailVerificationPayload>(token, {
-        secret: this.configService.getOrThrow<string>('jwt.emailSecret'),
+        secret: this.configService.get<string>('APP_JWT_EMAIL_SECRET'),
       });
 
       if (payload.type !== 'email-verification') {

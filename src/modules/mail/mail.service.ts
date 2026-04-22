@@ -11,10 +11,10 @@ export class MailService {
 
   constructor(private readonly configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
-      service: this.configService.get<string>('mail.service'),
+      service: this.configService.get<string>('APP_MAIL_SERVICE'),
       auth: {
-        user: this.configService.get<string>('mail.user'),
-        pass: this.configService.get<string>('mail.pass'),
+        user: this.configService.get<string>('APP_MAIL_USER'),
+        pass: this.configService.get<string>('APP_MAIL_PASS'),
       },
     });
   }
@@ -24,15 +24,13 @@ export class MailService {
     name: string,
     token: string,
   ): Promise<void> {
-    const frontendUrl =
-      this.configService.get<string>('app.frontendUrl') ||
-      'http://localhost:3000';
+    const frontendUrl = this.configService.get<string>('APP_FRONTEND_URL');
 
     const verifyUrl = `${frontendUrl}/auth/verify-email?token=${token}`;
 
     try {
       await this.transporter.sendMail({
-        from: this.configService.get<string>('mail.from'),
+        from: this.configService.get<string>('APP_MAIL_FROM'),
         to: email,
         subject: 'Verify your email',
         html: verifyEmailTemplate(name, verifyUrl),

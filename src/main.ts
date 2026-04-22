@@ -1,24 +1,35 @@
+import { join } from 'node:path';
+
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
 import cookieParser from 'cookie-parser';
-import { Logger } from 'nestjs-pino';
+import * as express from 'express';
+import { PinoLogger } from 'nestjs-pino';
 
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
-  app.useLogger(app.get(Logger));
-  const logger = await app.resolve(Logger);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
 
+  const configService = app.get(ConfigService);
+
+  // only keep this if you want Nest internal logs through pino
+  // app.useLogger(app.get(Logger));
+
+  const logger = await app.resolve(PinoLogger);
+  logger.setContext('Bootstrap');
+
+  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   app.use(cookieParser());
 
   app.enableCors({
-    origin: 'http://localhost:3000', // frontend url
+    origin: configService.get<string>('APP_FRONTEND_URL'),
     credentials: true,
   });
 
@@ -27,29 +38,19 @@ async function bootstrap() {
       whitelist: true,
       transform: true,
       forbidNonWhitelisted: true,
+      stopAtFirstError: true,
     }),
   );
-
-  app.enableShutdownHooks();
 
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  const port = configService.get<number>('PORT') ?? 3000;
+  const port = configService.get<number>('APP_PORT') ?? 3000;
 
   await app.listen(port);
 
-  logger.log(`Server started on http://localhost:${port}`, 'Bootstrap');
+  logger.info(`Server started on http://localhost:${port}`);
   console.log(`Server started on http://localhost:${port}`);
-
-  const shutdown = async (signal: string) => {
-    logger.warn(`Server shutting down by ${signal}`, 'Bootstrap');
-    await app.close();
-    process.exit(0);
-  };
-
-  process.on('SIGINT', shutdown);
-  process.on('SIGTERM', shutdown);
 }
 
 bootstrap();

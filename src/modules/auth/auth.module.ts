@@ -23,11 +23,9 @@ import { JwtCookieStrategy } from './strategies/jwt-cookie.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('jwt.secret') ?? 'super-secret-key',
+        secret: configService.get<string>('APP_JWT_SECRET'),
         signOptions: {
-          expiresIn:
-            configService.get<StringValue>('jwt.expiresIn') ??
-            ('1d' as StringValue),
+          expiresIn: configService.get<StringValue>('APP_JWT_EXPIRES_IN'),
         },
       }),
     }),

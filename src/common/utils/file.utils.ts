@@ -77,6 +77,6 @@ export const createMulterOptions = (options: UploadOptions) => {
 export const buildFileUrl = (path?: string | null) => {
   if (!path) return null;
 
-  const baseUrl = process.env.BASE_URL || 'http://localhost:6200';
+  const baseUrl = process.env.APP_BASE_URL || 'http://localhost:6200';
   return `${baseUrl}${path}`;
 };
