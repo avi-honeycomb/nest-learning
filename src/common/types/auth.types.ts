@@ -1,7 +1,9 @@
+import { RoleType } from '@/common/enums/role.enum';
+
 export type AuthUser = {
   userId: number;
   email: string;
-  role: string;
+  role: RoleType;
 };
 
 export type EmailVerificationPayload = {

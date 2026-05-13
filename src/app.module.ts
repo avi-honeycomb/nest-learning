@@ -24,7 +24,7 @@ import { UsersModule } from '@/modules/users/users.module';
 
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
-import { RolesGuard } from '@/common/guards/roles.guard';
+import { PermissionGuard } from '@/common/guards/permissions.guard';
 
 @Module({
   imports: [
@@ -65,9 +65,13 @@ import { RolesGuard } from '@/common/guards/roles.guard';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard,
+      useClass: PermissionGuard,
     },
   ],
 })
