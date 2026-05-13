@@ -12,6 +12,9 @@ import {
 
 import { GetAllUsersDto } from '@/modules/users/dto/get-all-users.dto';
 
+import { Roles } from '@/common/decorators/roles.decorator';
+import { RoleType } from '@/common/enums/role.enum';
+
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
@@ -20,6 +23,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('list')
+  @Roles(RoleType.ADMIN)
   @HttpCode(HttpStatus.OK)
   async findAll(@Body() body: GetAllUsersDto) {
     console.log('Request Body:', body);
@@ -33,6 +37,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @Roles(RoleType.ADMIN)
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }

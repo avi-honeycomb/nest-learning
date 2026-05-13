@@ -19,12 +19,12 @@ import { AuthModule } from '@/modules/auth/auth.module';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { MailModule } from '@/modules/mail/mail.module';
 import { RolesModule } from '@/modules/roles/roles.module';
+import { TasksModule } from '@/modules/tasks/tasks.module';
 import { UsersModule } from '@/modules/users/users.module';
 
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
-
-import { TasksModule } from './modules/tasks/tasks.module';
+import { RolesGuard } from '@/common/guards/roles.guard';
 
 @Module({
   imports: [
@@ -64,6 +64,10 @@ import { TasksModule } from './modules/tasks/tasks.module';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
