@@ -15,10 +15,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { SignupDto } from '@/modules/auth/dto/signup.dto';
 
-import {
-  DEFAULT_FILE_SIZE,
-  IMAGE_ALLOWED_TYPES,
-} from '@/common/constants/file.constants';
+import { DEFAULT_FILE_SIZE } from '@/common/constants/file.constants';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { Public } from '@/common/decorators/public.decorator';
 import type { AuthUser } from '@/common/types/auth.types';
@@ -48,7 +45,6 @@ export class AuthController {
         folder: 'profileImages',
         prefix: 'profile',
         maxSize: DEFAULT_FILE_SIZE,
-        allowedMimeTypes: IMAGE_ALLOWED_TYPES,
       }),
     ),
   )

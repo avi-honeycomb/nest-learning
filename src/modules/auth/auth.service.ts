@@ -1,6 +1,7 @@
 import { unlink } from 'node:fs/promises';
 
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -11,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions, TokenExpiredError } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
+import { fileTypeFromFile } from 'file-type';
 
 import { SignupDto } from '@/modules/auth/dto/signup.dto';
 import { MailService } from '@/modules/mail/mail.service';
@@ -18,6 +20,7 @@ import { RolesService } from '@/modules/roles/roles.service';
 import { User } from '@/modules/users/entities/user.entity';
 import { UsersService } from '@/modules/users/users.service';
 
+import { IMAGE_ALLOWED_TYPES } from '@/common/constants/file.constants';
 import { RoleType } from '@/common/enums/role.enum';
 import type {
   AuthUser,
@@ -110,6 +113,15 @@ export class AuthService {
         throw new ConflictException('Email already exists');
       }
 
+      if (file?.path) {
+        const detectedType = await fileTypeFromFile(file.path);
+
+        if (!detectedType || !IMAGE_ALLOWED_TYPES.includes(detectedType.mime)) {
+          await unlink(file.path);
+          throw new BadRequestException('Invalid file type');
+        }
+      }
+
       const roleId = await this.rolesService.findRoleIdByType(RoleType.USER);
 
       const hashedPassword = await bcrypt.hash(signupDto.password, 10);
@@ -148,7 +160,10 @@ export class AuthService {
         }
       }
 
-      if (error instanceof ConflictException) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
 

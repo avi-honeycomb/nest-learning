@@ -1,8 +1,5 @@
 import { extname } from 'node:path';
 
-import { BadRequestException } from '@nestjs/common';
-
-import type { Request } from 'express';
 import { diskStorage } from 'multer';
 
 import { DEFAULT_FILE_SIZE } from '@/common/constants/file.constants';
@@ -11,7 +8,6 @@ export type UploadOptions = {
   folder: string;
   prefix?: string;
   maxSize?: number;
-  allowedMimeTypes?: string[];
 };
 
 export const generateFileName = (
@@ -29,12 +25,7 @@ export const getFileSizeInMB = (bytes: number): number => {
 };
 
 export const createMulterOptions = (options: UploadOptions) => {
-  const {
-    folder,
-    prefix,
-    maxSize = DEFAULT_FILE_SIZE,
-    allowedMimeTypes = [],
-  } = options;
+  const { folder, prefix, maxSize = DEFAULT_FILE_SIZE } = options;
 
   return {
     storage: diskStorage({
@@ -49,27 +40,6 @@ export const createMulterOptions = (options: UploadOptions) => {
 
     limits: {
       fileSize: maxSize,
-    },
-
-    fileFilter: (
-      req: Request,
-      file: Express.Multer.File,
-      cb: (error: Error | null, acceptFile: boolean) => void,
-    ) => {
-      if (!allowedMimeTypes || allowedMimeTypes.length === 0) {
-        return cb(null, true);
-      }
-
-      if (!allowedMimeTypes.includes(file.mimetype)) {
-        return cb(
-          new BadRequestException(
-            `Only ${allowedMimeTypes.join(', ')} files are allowed`,
-          ),
-          false,
-        );
-      }
-
-      cb(null, true);
     },
   };
 };
