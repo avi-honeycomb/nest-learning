@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: learning_nest_app
+    restart: unless-stopped
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+      - '9229:9229'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:debug
+    env_file:
+      - .env
+    environment:
+      CHOKIDAR_USEPOLLING: 'true'
+      WATCHPACK_POLLING: 'true'
+      TSC_WATCHFILE: 'DynamicPriorityPolling'
+      TSC_WATCHDIRECTORY: 'DynamicPriorityPolling'
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: learning_postgres
+    restart: unless-stopped
+    ports:
+      - '${APP_DB_LOCAL_PORT}:${APP_DB_PORT}'
+    environment:
+      POSTGRES_USER: ${APP_DB_USERNAME}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+      POSTGRES_DB: ${APP_DB_NAME}
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_dev_data:

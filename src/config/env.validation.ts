@@ -29,6 +29,9 @@ class EnvValidationSchema {
   @IsNumber()
   APP_DB_PORT: number;
 
+  @IsNumber()
+  APP_DB_LOCAL_PORT: number;
+
   @IsString()
   APP_DB_USERNAME: string;
 
@@ -66,6 +69,7 @@ const allowedEnvKeys = [
   'APP_FRONTEND_URL',
   'APP_DB_HOST',
   'APP_DB_PORT',
+  'APP_DB_LOCAL_PORT',
   'APP_DB_USERNAME',
   'APP_DB_PASSWORD',
   'APP_DB_NAME',
